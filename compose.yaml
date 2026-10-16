@@ -1,0 +1,20 @@
+services:
+  app:
+    build: .
+    image: production-scheduler
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    environment:
+      # Safe defaults; for debugging: DOCKER_APP_DEBUG=true docker compose up -d
+      # (dedicated names: Compose also reads the project's local .env, which has APP_DEBUG=true for development)
+      APP_ENV: ${DOCKER_APP_ENV:-production}
+      APP_DEBUG: ${DOCKER_APP_DEBUG:-false}
+      APP_URL: http://localhost:${APP_PORT:-8000}
+      SCHEDULING_CHANGEOVER_MINUTES: ${SCHEDULING_CHANGEOVER_MINUTES:-30}
+      SCHEDULING_DISPLAY_TIMEZONE: ${SCHEDULING_DISPLAY_TIMEZONE:-America/Toronto}
+      SEED_DEMO_DATA: "true"
+    volumes:
+      - scheduler-data:/data
+
+volumes:
+  scheduler-data:
